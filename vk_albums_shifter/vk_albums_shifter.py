@@ -3,6 +3,7 @@ import re
 import sys
 
 APP_ID = '6273721'
+GROUP_LINK = 'https://vk.com/hitrovostudio'
 
 
 def reorder_albums(vk_api, group_id, album_ids_to_move, id_for_point_album):
@@ -56,9 +57,9 @@ def script_parameters():
         album_pointer = input('Перед каким альбомом размещать? Введите ссылку: ')
     else:
         mode = 1
-        group_link = sys.argv[1]
-        album_to_move = sys.argv[2]
-        album_pointer = sys.argv[3]
+        group_link = GROUP_LINK
+        album_to_move = sys.argv[1]
+        album_pointer = sys.argv[2]
     return {
         'mode': mode,
         'group_link': group_link,
