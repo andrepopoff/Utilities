@@ -1,12 +1,11 @@
 import vk
+import re
 
 GROUP_ID = '-54705114'
+APP_ID = '6273721'
 
 
-def reorder_albums(group_id, app_id='6273721'):
-    login = input('Введите логин ВК: ')
-    password = input('Введите пароль: ')
-
+def reorder_albums(login, password, group_id, app_id):
     vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
     vk_api = vk.API(vk_session)
 
@@ -16,5 +15,14 @@ def reorder_albums(group_id, app_id='6273721'):
     except vk.exceptions.VkAPIError:
         print('Ошибка VkAPIError')
 
+
+def get_info_about_the_group(link):
+    pass
+
+
 if __name__ == '__main__':
-    reorder_albums(GROUP_ID)
+    login = input('Введите логин ВК: ')
+    password = input('Введите пароль: ')
+    link = input('Введите ссылку на группу: ')
+
+    reorder_albums(login, password, GROUP_ID, APP_ID)
