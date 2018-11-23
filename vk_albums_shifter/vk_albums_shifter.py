@@ -41,7 +41,7 @@ def find_album_id_by_reference():
         if response == 'n':
             switch = False
 
-    point_album = input('Перед каким альбомом размещать? Введите ссылку: ')  # рядом с этим альбомом будет размещен альбом после перемещения
+    point_album = input('Перед каким альбомом размещать? Введите ссылку: ')
     id_for_point_album = re.findall('_([0-9]+$)', point_album)[0]
 
     return album_ids, id_for_point_album
