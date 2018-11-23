@@ -31,16 +31,19 @@ def connect_with_vk(app_id):
 def find_album_id_by_reference():
     switch = True
     album_ids = []
+
     while switch:
         album_to_move = input('Введите ссылку на перемещаемый альбом: ')
         id_for_album_to_move = re.findall('_([0-9]+$)', album_to_move)[0]
         album_ids.append(id_for_album_to_move)
         response = input('Хотите переместить еще 1 альбом? (y/n) ')
+
         if response == 'n':
             switch = False
 
     point_album = input('Перед каким альбомом размещать? Введите ссылку: ')  # рядом с этим альбомом будет размещен альбом после перемещения
     id_for_point_album = re.findall('_([0-9]+$)', point_album)[0]
+
     return album_ids, id_for_point_album
 
 
