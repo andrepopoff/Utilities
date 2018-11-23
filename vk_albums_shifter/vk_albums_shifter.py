@@ -37,5 +37,5 @@ def find_album_id_by_reference():
 if __name__ == '__main__':
     vk_api = connect_with_vk(APP_ID)
     group_id = learn_group_id(vk_api)
-    id_for_album_to_move, id_for_point_album = find_album_id_by_reference()
-    reorder_albums(vk_api, group_id, id_for_album_to_move, id_for_point_album)
+    album_to_move, point_album = find_album_id_by_reference()
+    reorder_albums(vk_api, group_id, album_to_move, point_album)
