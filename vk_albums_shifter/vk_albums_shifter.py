@@ -29,16 +29,18 @@ def connect_with_vk(app_id):
     return vk.API(vk_session)
 
 
-def pull_album_ids(album_to_move, album_pointer, mode):
+def pull_album_ids(albums_to_move, album_pointer, mode):
     album_ids = []
 
-    while album_to_move != 'n':
-        id_for_album_to_move = re.findall('_([0-9]+$)', album_to_move)[0]
-        album_ids.append(id_for_album_to_move)
-        if not mode:
-            album_to_move = input('Введите ссылку на новый альбом для перемещения (если еще есть)? Нет (n) ')
-        else:
-            album_to_move = 'n'
+    if not mode:
+        while albums_to_move != 'n':
+            id_for_album_to_move = re.findall('_([0-9]+$)', albums_to_move)[0]
+            album_ids.append(id_for_album_to_move)
+            albums_to_move = input('Введите ссылку на новый альбом для перемещения (если еще есть)? Нет (n) ')
+    else:
+        for album in albums_to_move:
+            id_for_album_to_move = re.findall('_([0-9]+$)', album)[0]
+            album_ids.append(id_for_album_to_move)
 
     id_for_point_album = re.findall('_([0-9]+$)', album_pointer)[0]
 
@@ -49,17 +51,17 @@ def script_parameters():
     if len(sys.argv) == 1:
         mode = 0
         group_link = input('Введите ссылку на группу: ')
-        album_to_move = input('Введите ссылку на перемещаемый альбом: ')
+        albums_to_move = input('Введите ссылку на перемещаемый альбом: ')
         album_pointer = input('Перед каким альбомом размещать? Введите ссылку: ')
     else:
         mode = 1
         group_link = GROUP_LINK
-        album_to_move = sys.argv[1]
-        album_pointer = sys.argv[2]
+        albums_to_move = sys.argv[2:]
+        album_pointer = sys.argv[1]
     return {
         'mode': mode,
         'group_link': group_link,
-        'album_to_move': album_to_move,
+        'albums_to_move': albums_to_move,
         'album_pointer': album_pointer
     }
 
@@ -68,6 +70,6 @@ if __name__ == '__main__':
     vk_api = connect_with_vk(APP_ID)
     parameters_dict = script_parameters()
     group_id = pull_group_id(vk_api, parameters_dict['group_link'])
-    album_ids_to_move, id_for_point_album = pull_album_ids(parameters_dict['album_to_move'],
+    album_ids_to_move, id_for_point_album = pull_album_ids(parameters_dict['albums_to_move'],
                                                            parameters_dict['album_pointer'], parameters_dict['mode'])
     reorder_albums(vk_api, group_id, album_ids_to_move, id_for_point_album)
