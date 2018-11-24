@@ -22,13 +22,9 @@ def pull_group_id(vk_api, link):
     return -group_id
 
 
-def connect_with_vk(app_id, mode=0):
-    if mode:
-        with open('data_for_auth.txt', 'r') as f:
-            login, password = [line.rstrip() for line in f]
-    else:
-        login = input('Введите логин ВК: ')
-        password = input('Введите пароль: ')
+def connect_with_vk(app_id):
+    login = input('Введите логин ВК: ')
+    password = input('Введите пароль: ')
     vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
     return vk.API(vk_session)
 
@@ -69,8 +65,8 @@ def script_parameters():
 
 
 if __name__ == '__main__':
+    vk_api = connect_with_vk(APP_ID)
     parameters_dict = script_parameters()
-    vk_api = connect_with_vk(APP_ID, parameters_dict['mode'])
     group_id = pull_group_id(vk_api, parameters_dict['group_link'])
     album_ids_to_move, id_for_point_album = pull_album_ids(parameters_dict['album_to_move'],
                                                            parameters_dict['album_pointer'], parameters_dict['mode'])
