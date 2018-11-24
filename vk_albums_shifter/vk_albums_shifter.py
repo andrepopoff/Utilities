@@ -55,19 +55,22 @@ def pull_album_ids(albums_to_move, album_pointer, mode):
     """
     Links to albums on vk.com --> album ids
     """
-    album_ids = []
+    try:
+        id_for_point_album = re.findall('_([0-9]+$)', album_pointer)[0]
+        album_ids = []
 
-    if not mode:
-        while albums_to_move != 'n':
-            id_for_album_to_move = re.findall('_([0-9]+$)', albums_to_move)[0]
-            album_ids.append(id_for_album_to_move)
-            albums_to_move = input('Введите ссылку на новый альбом для перемещения (если еще есть)? Нет (n) ')
-    else:
-        for album in albums_to_move:
-            id_for_album_to_move = re.findall('_([0-9]+$)', album)[0]
-            album_ids.append(id_for_album_to_move)
-
-    id_for_point_album = re.findall('_([0-9]+$)', album_pointer)[0]
+        if not mode:
+            while albums_to_move != 'n':
+                id_for_album_to_move = re.findall('_([0-9]+$)', albums_to_move)[0]
+                album_ids.append(id_for_album_to_move)
+                albums_to_move = input('Введите ссылку на новый альбом для перемещения (если еще есть)? Нет (n) ')
+        else:
+            for album in albums_to_move:
+                id_for_album_to_move = re.findall('_([0-9]+$)', album)[0]
+                album_ids.append(id_for_album_to_move)
+    except IndexError:
+        print('Неверная ссылка на альбом!')
+        sys.exit()
 
     return album_ids, id_for_point_album
 
