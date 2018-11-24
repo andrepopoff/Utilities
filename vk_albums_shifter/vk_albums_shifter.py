@@ -23,6 +23,9 @@ def pull_group_id(vk_api, link):
 
 
 def connect_with_vk(app_id):
+    """
+    Авторизация на сайте vk.com
+    """
     login = input('Введите логин ВК: ')
     password = input('Введите пароль: ')
     vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
