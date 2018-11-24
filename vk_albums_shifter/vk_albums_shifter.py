@@ -28,8 +28,12 @@ def pull_group_id(vk_api, link):
     """
     Link to group --> group id
     """
-    group_name = re.findall('vk.com/([\S]+$)', link)[0]
-    group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
+    try:
+        group_name = re.findall('vk.com/([\S]+$)', link)[0]
+        group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
+    except IndexError:
+        print('Вы ввели неверную ссылку на группу!')
+        sys.exit()
     return -group_id
 
 
