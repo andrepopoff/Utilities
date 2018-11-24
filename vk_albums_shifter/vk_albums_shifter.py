@@ -37,9 +37,13 @@ def connect_with_vk(app_id):
     """
     Authorization on vk.com
     """
-    login = input('Введите логин ВК: ')
-    password = input('Введите пароль: ')
-    vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
+    try:
+        login = input('Введите логин ВК: ')
+        password = input('Введите пароль: ')
+        vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
+    except vk.exceptions.VkAuthError:
+        print('Неправильный логин или пароль!')
+        sys.exit()
     return vk.API(vk_session)
 
 
