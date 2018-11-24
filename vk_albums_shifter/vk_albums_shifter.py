@@ -28,8 +28,12 @@ def pull_group_id(vk_api, link):
     """
     Link to group --> group id
     """
-    group_name = re.findall('vk.com/([\S]+$)', link)[0]
-    group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
+    try:
+        group_name = re.findall('vk.com/([\S]+$)', link)[0]
+        group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
+    except IndexError:
+        print('Вы ввели неверную ссылку на группу!')
+        sys.exit()
     return -group_id
 
 
@@ -37,9 +41,13 @@ def connect_with_vk(app_id):
     """
     Authorization on vk.com
     """
-    login = input('Введите логин ВК: ')
-    password = input('Введите пароль: ')
-    vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
+    try:
+        login = input('Введите логин ВК: ')
+        password = input('Введите пароль: ')
+        vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
+    except vk.exceptions.VkAuthError:
+        print('Неправильный логин или пароль!')
+        sys.exit()
     return vk.API(vk_session)
 
 
@@ -47,19 +55,22 @@ def pull_album_ids(albums_to_move, album_pointer, mode):
     """
     Links to albums on vk.com --> album ids
     """
-    album_ids = []
+    try:
+        id_for_point_album = re.findall('_([0-9]+$)', album_pointer)[0]
+        album_ids = []
 
-    if not mode:
-        while albums_to_move != 'n':
-            id_for_album_to_move = re.findall('_([0-9]+$)', albums_to_move)[0]
-            album_ids.append(id_for_album_to_move)
-            albums_to_move = input('Введите ссылку на новый альбом для перемещения (если еще есть)? Нет (n) ')
-    else:
-        for album in albums_to_move:
-            id_for_album_to_move = re.findall('_([0-9]+$)', album)[0]
-            album_ids.append(id_for_album_to_move)
-
-    id_for_point_album = re.findall('_([0-9]+$)', album_pointer)[0]
+        if not mode:
+            while albums_to_move != 'n':
+                id_for_album_to_move = re.findall('_([0-9]+$)', albums_to_move)[0]
+                album_ids.append(id_for_album_to_move)
+                albums_to_move = input('Введите ссылку на новый альбом для перемещения (если еще есть)? Нет (n) ')
+        else:
+            for album in albums_to_move:
+                id_for_album_to_move = re.findall('_([0-9]+$)', album)[0]
+                album_ids.append(id_for_album_to_move)
+    except IndexError:
+        print('Неверная ссылка на альбом!')
+        sys.exit()
 
     return album_ids, id_for_point_album
 
