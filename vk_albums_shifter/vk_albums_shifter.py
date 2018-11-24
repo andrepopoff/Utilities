@@ -1,12 +1,20 @@
+"""
+This script changes the order of the albums in the group on vk.com.
+The script is useful, who has commercial groups on vk.com with a large number of albums.
+This eliminates the routine of dragging albums with the PC mouse.
+"""
+
 import vk
 import re
 import sys
 
 APP_ID = '6273721'
-GROUP_LINK = 'https://vk.com/hitrovostudio'
 
 
 def reorder_albums(vk_api, group_id, album_ids_to_move, id_for_point_album):
+    """
+    Changes the order of albums
+    """
     print('...Выполняется перемещение альбомов...')
     try:
         for album_id in album_ids_to_move:
@@ -17,12 +25,18 @@ def reorder_albums(vk_api, group_id, album_ids_to_move, id_for_point_album):
 
 
 def pull_group_id(vk_api, link):
+    """
+    Link to group --> group id
+    """
     group_name = re.findall('vk.com/([\S]+$)', link)[0]
     group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
     return -group_id
 
 
 def connect_with_vk(app_id):
+    """
+    Authorization on vk.com
+    """
     login = input('Введите логин ВК: ')
     password = input('Введите пароль: ')
     vk_session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password, scope='groups, photos')
@@ -30,6 +44,9 @@ def connect_with_vk(app_id):
 
 
 def pull_album_ids(albums_to_move, album_pointer, mode):
+    """
+    Links to albums on vk.com --> album ids
+    """
     album_ids = []
 
     if not mode:
@@ -48,6 +65,10 @@ def pull_album_ids(albums_to_move, album_pointer, mode):
 
 
 def script_parameters():
+    """
+    Creates parameters for further script operation.
+    Parameters differ depending on the method of calling the script.
+    """
     if len(sys.argv) == 1:
         mode = 0
         group_link = input('Введите ссылку на группу: ')
@@ -55,7 +76,7 @@ def script_parameters():
         album_pointer = input('Перед каким альбомом размещать? Введите ссылку: ')
     else:
         mode = 1
-        group_link = GROUP_LINK
+        group_link = input('Введите ссылку на группу: ')
         albums_to_move = sys.argv[2:]
         album_pointer = sys.argv[1]
     return {
