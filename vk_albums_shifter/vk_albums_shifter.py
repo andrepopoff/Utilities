@@ -7,6 +7,7 @@ This eliminates the routine of dragging albums with the PC mouse.
 import vk
 import re
 import sys
+import time
 
 APP_ID = '6273721'
 
@@ -18,6 +19,7 @@ def reorder_albums(vk_api, group_id, album_ids_to_move, id_for_point_album):
     print('...Выполняется перемещение альбомов...')
     try:
         for album_id in album_ids_to_move:
+            time.sleep(2)
             vk_api.photos.reorderAlbums(v='5.0', owner_id=group_id, album_id=album_id, before=id_for_point_album)
             print('Альбом {} перемещен'.format(album_id))
     except vk.exceptions.VkAPIError:
