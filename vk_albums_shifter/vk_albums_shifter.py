@@ -23,26 +23,24 @@ API_VERSION = 5.52
 access_token = ''  # Before you start, you need to get access_token
 
 
-def reorder_albums(group_id, album_ids_to_move, id_for_point_album):
+def script_parameters():
     """
-    Changes the order of albums
+    Creates parameters for further script operation.
+    Parameters differ depending on the method of calling the script.
     """
-    print('...Выполняется перемещение альбомов...')
-
-    for album_id in album_ids_to_move:
-        time.sleep(2)
-        response = requests.get(API_PATH + 'photos.reorderAlbums', params={'v': API_VERSION,
-                                                                           'owner_id': group_id,
-                                                                           'album_id': album_id,
-                                                                           'before': id_for_point_album,
-                                                                           'access_token': access_token})
-        json_response = response.json()
-
-        try:
-            if json_response['response']:
-                print('Альбом {} перемещен'.format(album_id))
-        except KeyError:
-            print('Код ошибки: {}. {}'.format(json_response['error']['error_code'], json_response['error']['error_msg']))
+    if len(sys.argv) == 1:
+        mode = 0
+        album_pointer = input('Перед каким альбомом размещать? Введите ссылку: ')
+        albums_to_move = input('Введите ссылку на перемещаемый альбом: ')
+    else:
+        mode = 1
+        album_pointer = sys.argv[1]
+        albums_to_move = sys.argv[2:]
+    return {
+        'mode': mode,
+        'albums_to_move': albums_to_move,
+        'album_pointer': album_pointer
+    }
 
 
 def pull_group_id(album_link):
@@ -76,24 +74,26 @@ def pull_album_ids(albums_to_move, album_pointer, mode):
     return album_ids, id_for_point_album
 
 
-def script_parameters():
+def reorder_albums(group_id, album_ids_to_move, id_for_point_album):
     """
-    Creates parameters for further script operation.
-    Parameters differ depending on the method of calling the script.
+    Changes the order of albums
     """
-    if len(sys.argv) == 1:
-        mode = 0
-        album_pointer = input('Перед каким альбомом размещать? Введите ссылку: ')
-        albums_to_move = input('Введите ссылку на перемещаемый альбом: ')
-    else:
-        mode = 1
-        album_pointer = sys.argv[1]
-        albums_to_move = sys.argv[2:]
-    return {
-        'mode': mode,
-        'albums_to_move': albums_to_move,
-        'album_pointer': album_pointer
-    }
+    print('...Выполняется перемещение альбомов...')
+
+    for album_id in album_ids_to_move:
+        time.sleep(2)
+        response = requests.get(API_PATH + 'photos.reorderAlbums', params={'v': API_VERSION,
+                                                                           'owner_id': group_id,
+                                                                           'album_id': album_id,
+                                                                           'before': id_for_point_album,
+                                                                           'access_token': access_token})
+        json_response = response.json()
+
+        try:
+            if json_response['response']:
+                print('Альбом {} перемещен'.format(album_id))
+        except KeyError:
+            print('Код ошибки: {}. {}'.format(json_response['error']['error_code'], json_response['error']['error_msg']))
 
 
 if __name__ == '__main__':
