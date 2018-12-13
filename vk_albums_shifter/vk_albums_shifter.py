@@ -18,6 +18,8 @@ import requests
 
 
 APP_ID = '6273721'
+API_PATH = 'https://api.vk.com/method/'
+API_VERSION = 5.52
 access_token = ''
 
 
@@ -30,11 +32,11 @@ def reorder_albums(group_id, album_ids_to_move, id_for_point_album):
     for album_id in album_ids_to_move:
         time.sleep(2)
         print(group_id, 'group')
-        response = requests.get('https://api.vk.com/method/photos.reorderAlbums', params={'v': 5.52,
-                                                                                          'owner_id': group_id,
-                                                                                          'album_id': album_id,
-                                                                                          'before': id_for_point_album,
-                                                                                          'access_token': access_token})
+        response = requests.get(API_PATH + 'photos.reorderAlbums', params={'v': API_VERSION,
+                                                                           'owner_id': group_id,
+                                                                           'album_id': album_id,
+                                                                           'before': id_for_point_album,
+                                                                           'access_token': access_token})
         json_response = response.json()
         if json_response['response']:
             print('Альбом {} перемещен'.format(album_id))
@@ -48,9 +50,9 @@ def pull_group_id(link):
     """
     try:
         group_name = re.findall('vk.com/([\S]+$)', link)[0]
-        response = requests.get('https://api.vk.com/method/groups.getById', params={'v': 5.52,
-                                                                                    'group_id': group_name,
-                                                                                    'access_token': access_token})
+        response = requests.get(API_PATH + 'groups.getById', params={'v': API_VERSION,
+                                                                     'group_id': group_name,
+                                                                     'access_token': access_token})
         group_id = response.json()['response'][0]['id']
         # group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
     except IndexError:
