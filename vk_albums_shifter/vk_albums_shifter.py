@@ -20,7 +20,7 @@ import requests
 APP_ID = '6273721'
 API_PATH = 'https://api.vk.com/method/'
 API_VERSION = 5.52
-access_token = ''
+access_token = ''  # Before you start, you need to get access_token
 
 
 def reorder_albums(group_id, album_ids_to_move, id_for_point_album):
@@ -31,34 +31,25 @@ def reorder_albums(group_id, album_ids_to_move, id_for_point_album):
 
     for album_id in album_ids_to_move:
         time.sleep(2)
-        print(group_id, 'group')
         response = requests.get(API_PATH + 'photos.reorderAlbums', params={'v': API_VERSION,
                                                                            'owner_id': group_id,
                                                                            'album_id': album_id,
                                                                            'before': id_for_point_album,
                                                                            'access_token': access_token})
         json_response = response.json()
-        if json_response['response']:
-            print('Альбом {} перемещен'.format(album_id))
-        else:
+
+        try:
+            if json_response['response']:
+                print('Альбом {} перемещен'.format(album_id))
+        except KeyError:
             print('Код ошибки: {}. {}'.format(json_response['error']['error_code'], json_response['error']['error_msg']))
 
 
-def pull_group_id(link):
+def pull_group_id(album_link):
     """
-    Link to group --> group id
+    Link to album --> group id
     """
-    try:
-        group_name = re.findall('vk.com/([\S]+$)', link)[0]
-        response = requests.get(API_PATH + 'groups.getById', params={'v': API_VERSION,
-                                                                     'group_id': group_name,
-                                                                     'access_token': access_token})
-        group_id = response.json()['response'][0]['id']
-        # group_id = vk_api.groups.getById(v='5.0', group_id=group_name)[0]['id']
-    except IndexError:
-        print('Вы ввели неверную ссылку на группу!')
-        sys.exit()
-    return -group_id
+    return re.findall('vk.com/album(-\d+)', album_link)[0]
 
 
 def pull_album_ids(albums_to_move, album_pointer, mode):
@@ -92,17 +83,14 @@ def script_parameters():
     """
     if len(sys.argv) == 1:
         mode = 0
-        group_link = input('Введите ссылку на группу: ')
-        albums_to_move = input('Введите ссылку на перемещаемый альбом: ')
         album_pointer = input('Перед каким альбомом размещать? Введите ссылку: ')
+        albums_to_move = input('Введите ссылку на перемещаемый альбом: ')
     else:
         mode = 1
-        group_link = input('Введите ссылку на группу: ')
-        albums_to_move = sys.argv[2:]
         album_pointer = sys.argv[1]
+        albums_to_move = sys.argv[2:]
     return {
         'mode': mode,
-        'group_link': group_link,
         'albums_to_move': albums_to_move,
         'album_pointer': album_pointer
     }
@@ -110,7 +98,7 @@ def script_parameters():
 
 if __name__ == '__main__':
     parameters_dict = script_parameters()
-    group_id = pull_group_id(parameters_dict['group_link'])
+    group_id = pull_group_id(parameters_dict['album_pointer'])
     album_ids_to_move, id_for_point_album = pull_album_ids(parameters_dict['albums_to_move'],
                                                            parameters_dict['album_pointer'], parameters_dict['mode'])
     reorder_albums(group_id, album_ids_to_move, id_for_point_album)
