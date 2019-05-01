@@ -14,11 +14,12 @@ def get_group_id():
 
 
 def get_all_albums(group_id):
-    response = requests.get(API_PATH + 'photos.reorderAlbums', params={'v': API_VERSION, 'owner_id': group_id,
-                                                                       'access_token': access_token, 'need_covers': 1,
-                                                                       'photo_sizes': 1})
-    if response.get('response'):
-        return response['response']['items']
+    response = requests.get(API_PATH + 'photos.getAlbums', params={'v': API_VERSION, 'owner_id': group_id,
+                                                                   'access_token': access_token, 'need_covers': 1,
+                                                                   'photo_sizes': 1})
+    response_dict = response.json()
+    if response_dict.get('response'):
+        return response_dict['response']['items']
     return []
 
 
