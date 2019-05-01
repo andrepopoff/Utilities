@@ -1,4 +1,5 @@
 import sys
+import requests
 
 APP_ID = '6273721'
 API_PATH = 'https://api.vk.com/method/'
@@ -12,7 +13,14 @@ def get_group_id():
         return group_id_by_city.get(sys.argv[1])
 
 
+def get_all_albums(group_id):
+    response = requests.get(API_PATH + 'photos.reorderAlbums', params={'v': API_VERSION, 'owner_id': group_id,
+                                                                       'access_token': access_token})
+    if response.get('response'):
+        return response['response']['items']
+
+
 if __name__ == '__main__':
-    group = get_group_id()
-    if group:
-        pass
+    group_id = get_group_id()
+    if group_id:
+        all_albums = get_all_albums(group_id)
