@@ -28,23 +28,25 @@ def get_all_albums(group_id):
 if __name__ == '__main__':
     group_id = get_group_id()
     if group_id:
-        all_albums = get_all_albums(group_id)
+        while True:
+            all_albums = get_all_albums(group_id)
 
-        for album in all_albums:
-            if album['id'] not in (140958045, 215599660, 204790321):
-                title = album['title']
-                stopped = re.findall(r'\bстоп\b', title, flags=re.I)
-                if stopped:
-                    break
-                description = album['description']
-                message = title + '\n\n' + description if description else title
-                group_url = 'https://vk.com/club' + str(group_id)[1:]
-                attachment = 'album{}_{}'.format(group_id, album['id'])
-                album_url = 'https://vk.com/' + attachment
-                signature = '\n\nАльбом: {}\nГруппа: {}'.format(album_url, group_url)
-                message += signature
-                response = requests.get(API_PATH + 'wall.post', params={'v': API_VERSION, 'owner_id': group_id,
-                                                                        'access_token': access_token, 'from_group': 1,
-                                                                        'message': message, 'attachments': attachment})
-                print(response.json())
-                time.sleep(1800)
+            for album in all_albums:
+                if album['id'] not in (140958045, 215599660, 204790321):
+                    title = album['title']
+                    stopped = re.findall(r'\bстоп\b', title, flags=re.I)
+                    if stopped:
+                        break
+                    description = album['description']
+                    message = title + '\n\n' + description if description else title
+                    group_url = 'https://vk.com/club' + str(group_id)[1:]
+                    attachment = 'album{}_{}'.format(group_id, album['id'])
+                    album_url = 'https://vk.com/' + attachment
+                    signature = '\n\nАльбом: {}\nГруппа: {}'.format(album_url, group_url)
+                    message += signature
+                    response = requests.get(API_PATH + 'wall.post', params={'v': API_VERSION, 'owner_id': group_id,
+                                                                            'access_token': access_token,
+                                                                            'from_group': 1, 'message': message,
+                                                                            'attachments': attachment})
+                    print(response.json())
+                    time.sleep(1800)
