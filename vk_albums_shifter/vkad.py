@@ -2,10 +2,11 @@ import sys
 import requests
 import re
 
+from vk_settings import API_PATH, WALL_TOKEN, API_VERSION
+
+
 APP_ID = '6967460'
-API_PATH = 'https://api.vk.com/method/'
-API_VERSION = 5.52
-access_token = ''  # Before you start, you need to get access_token
+access_token = WALL_TOKEN  # Before you start, you need to get access_token
 
 
 def get_group_id():
