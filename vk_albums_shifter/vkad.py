@@ -19,9 +19,20 @@ def get_all_albums(group_id):
                                                                        'photo_sizes': 1})
     if response.get('response'):
         return response['response']['items']
+    return []
 
 
 if __name__ == '__main__':
     group_id = get_group_id()
     if group_id:
         all_albums = get_all_albums(group_id)
+
+        for album in all_albums:
+            if album['id'] != 140958045:
+                title = album['title']
+                description = album['description']
+
+                for photo in album['sizes']:
+                    if photo['type'] == 'z':
+                        src = photo['src']
+                        break
