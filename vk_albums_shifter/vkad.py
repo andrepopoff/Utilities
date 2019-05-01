@@ -2,11 +2,11 @@ import sys
 import requests
 import re
 
-from vk_settings import API_PATH, WALL_TOKEN, API_VERSION
+from vk_settings import API_PATH, BASE_TOKEN, API_VERSION
 
 
 APP_ID = '6967460'
-access_token = WALL_TOKEN  # Before you start, you need to get access_token
+access_token = BASE_TOKEN  # Before you start, you need to get access_token
 
 
 def get_group_id():
@@ -37,7 +37,11 @@ if __name__ == '__main__':
                     break
                 description = album['description']
                 message = title + '\n\n' + description if description else title
+                group_url = 'https://vk.com/club' + str(group_id)[1:]
                 attachment = 'album{}_{}'.format(group_id, album['id'])
+                album_url = 'https://vk.com/' + attachment
+                signature = '\n\nАльбом: {}\nГруппа: {}'.format(album_url, group_url)
+                message += signature
                 response = requests.get(API_PATH + 'wall.post', params={'v': API_VERSION, 'owner_id': group_id,
                                                                         'access_token': access_token, 'from_group': 1,
                                                                         'message': message, 'attachments': attachment})
