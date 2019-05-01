@@ -31,7 +31,7 @@ if __name__ == '__main__':
         all_albums = get_all_albums(group_id)
 
         for album in all_albums:
-            if album['id'] in (140958045, 215599660, 204790321):
+            if album['id'] not in (140958045, 215599660, 204790321):
                 title = album['title']
                 stopped = re.findall(r'\bстоп\b', title, flags=re.I)
                 if stopped:
